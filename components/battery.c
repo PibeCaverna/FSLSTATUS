@@ -109,6 +109,7 @@
 			  return map[i].symbol;
       }
     }
+    return "?";
   }
 
 	const char *
