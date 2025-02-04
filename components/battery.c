@@ -58,23 +58,58 @@
 		} map[] = {
 			{ "Charging",    "+" },
 			{ "Discharging", "-" },
-			{ "Full",        "o" },
+			{ "Full",        "󰂅" },
 			{ "Not charging", "o" },
 		};
 		size_t i;
+    int cap_perc;
 		char path[PATH_MAX], state[12];
-
+    
+    // Battery status
 		if (esnprintf(path, sizeof(path), POWER_SUPPLY_STATUS, bat) < 0)
 			return NULL;
 		if (pscanf(path, "%12[a-zA-Z ]", state) != 1)
 			return NULL;
+    
+    //Battery Percentage
+    if (esnprintf(path, sizeof(path), POWER_SUPPLY_CAPACITY, bat) < 0)
+		  return NULL;
+	  if (pscanf(path, "%d", &cap_perc) != 1)
+		  return NULL;
 
-		for (i = 0; i < LEN(map); i++)
-			if (!strcmp(map[i].state, state))
-				break;
-
-		return (i == LEN(map)) ? "?" : map[i].symbol;
-	}
+    //Map state
+	  for (i = 0; i < LEN(map); i++) {
+		  if (!strcmp(map[i].state, state)) {
+			  if (!strcmp(state, "Discharging")) {
+				  if (cap_perc > 95) return "󰁹"; 
+				  if (cap_perc > 90) return "󰂂"; 
+				  if (cap_perc > 80) return "󰂁"; 
+				  if (cap_perc > 70) return "󰂀"; 
+				  if (cap_perc > 60) return "󰁿"; 
+				  if (cap_perc > 50) return "󰁾"; 
+				  if (cap_perc > 40) return "󰁽"; 
+				  if (cap_perc > 30) return "󰁼"; 
+				  if (cap_perc > 20) return "󰁻"; 
+				  if (cap_perc > 10) return "󰁺"; 
+				  return "󱃍";                     
+			  }
+			  if (!strcmp(state, "Charging")) {
+				  if (cap_perc > 95) return "󰂅";  
+				  if (cap_perc > 90) return "󰂋";  
+				  if (cap_perc > 80) return "󰂊";  
+				  if (cap_perc > 70) return "󰢞";  
+				  if (cap_perc > 60) return "󰂉";  
+				  if (cap_perc > 50) return "󰢝";  
+				  if (cap_perc > 40) return "󰂈";  
+				  if (cap_perc > 30) return "󰂇";  
+				  if (cap_perc > 20) return "󰂆";  
+				  if (cap_perc > 10) return "󰢜"; 
+				  return "󱃍";                     
+			  }
+			  return map[i].symbol;
+      }
+    }
+  }
 
 	const char *
 	battery_remaining(const char *bat)
