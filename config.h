@@ -65,7 +65,8 @@ static const char unknown_str[] = "n/a";
  */
 static const struct arg args[] = {
 	/* function   format  argument */
-  { battery_state ," %s\u2006"   ,"BAT0" },
+  { run_command   ,"%s"          ,"wpctl get-volume @DEFAULT_AUDIO_SINK@"},
+  { battery_state ," %s\u2004"   ,"BAT0" },
   { battery_perc  ,"%s%% "       ,"BAT0" },
 	{ datetime      ," %s "        ,"%T"   }
 };
